@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.springframework.cloud</groupId>
 		<artifactId>spring-cloud-starter-parent</artifactId>
-		<version>Brixton.SR5</version>
+		<version>Camden.RELEASE</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
@@ -29,6 +29,7 @@
 	<modules>
 		<module>alan-demo-sleuth</module>
 		<module>alan-demo-sleuth-zipkin</module>
+		<module>alan-demo-sleuth-zipkin-stream</module>
 	</modules>
 
 	<!-- 全局属性定义 -->

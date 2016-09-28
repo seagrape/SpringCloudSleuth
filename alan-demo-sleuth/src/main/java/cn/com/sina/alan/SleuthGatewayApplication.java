@@ -43,14 +43,14 @@ public class SleuthGatewayApplication {
 	private SpanAccessor accessor;
 	
 	@RequestMapping(value = "/do/{msg}", method = RequestMethod.GET)
-	public String doSomething(@PathVariable("msg") String msg) throws InterruptedException{
+	public String doSomething(@PathVariable("msg") String msg) {
 		
 		log.info(msg);
-
+		// rpc
 		String s = wshService.toMsA();
-		
+		// 处理rpc结果，做一些适配类的工作
 		String result = wshService.trans(s);
-		
+		// 异步方法去做一些事情，比如发起风险控制类的操作
 		wshService.localBackGround();
 		
 		return result;

@@ -68,18 +68,17 @@ public class SleuthMsAApplication {
 //		3
 		TraceKeys traceKeys = new TraceKeys();
 		SpanNamer spanNamer = new DefaultSpanNamer();
-		ExecutorService executorService1 = Executors.newFixedThreadPool(3);
-		ExecutorService executorService2 = Executors.newFixedThreadPool(3);
+		ExecutorService executor = Executors.newFixedThreadPool(3);
 
 		// tag::completablefuture[]
 		CompletableFuture<String> completableFuture = 
 				CompletableFuture.supplyAsync(
 				() -> wshService.toMsB(), 
-				new TraceableExecutorService(executorService1,this.tracer, traceKeys, spanNamer, "calculateTax-1")
+				new TraceableExecutorService(executor,this.tracer, traceKeys, spanNamer, "calculateTax-1")
 		).thenCombine(
 				CompletableFuture.supplyAsync(
 				() -> wshService.toMsC(),
-				new TraceableExecutorService(executorService2,this.tracer, traceKeys, spanNamer, "calculateTax-2")
+				new TraceableExecutorService(executor,this.tracer, traceKeys, spanNamer, "calculateTax-2")
         ), (r1, r2) -> "{sb=>"+r1+",sc=>"+r2+"}");
 		
 		result = completableFuture.get();

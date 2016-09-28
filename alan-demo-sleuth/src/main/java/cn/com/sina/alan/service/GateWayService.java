@@ -41,9 +41,13 @@ public class GateWayService {
 	}
 	
 	@Async
-	public void localBackGround() throws InterruptedException {
+	public void localBackGround() {
 		int millis = this.random.nextInt(500);
-		Thread.sleep(millis);
+		try {
+			Thread.sleep(millis);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		this.tracer.addTag("background-sleep-millis", String.valueOf(millis));
 		System.out.println("--- GateWayService.localBackGround");
 	}	

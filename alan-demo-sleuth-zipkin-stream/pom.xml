@@ -9,21 +9,36 @@
 		<relativePath />
 	</parent>
 	
-	<artifactId>alan-demo-sleuth-zipkin</artifactId>
+	<artifactId>alan-demo-sleuth-zipkin-stream</artifactId>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
 	<url>http://spring-cloud.io/</url>
 
 
 	<dependencies>
-		<!-- <dependency>
-			<groupId>io.zipkin.java</groupId>
-			<artifactId>zipkin-server</artifactId>
-		</dependency> -->
+	
 		<dependency>
 			<groupId>io.zipkin.java</groupId>
 			<artifactId>zipkin-autoconfigure-ui</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-sleuth-zipkin-stream</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-stream-binder-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
