@@ -1,10 +1,6 @@
 package cn.com.sina.alan;
 
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,35 +49,45 @@ public class SleuthMsAApplication {
 
 		String result = "";
 		
-//		1
+//		1 顺序调用
 //		String sb = wshService.toMsB();
 //		String sc = wshService.toMsC();
 //		result = "{sb=>"+sb+",sc=>"+sc+"}";
 		
-//		2
+//		2 并发工具调用，但不传递trans信息
 //		result = ConcurrentUtils.concurrentExecuteSame(
 //		        () -> wshService.toMsB(),
 //		        () -> wshService.toMsC(),
 //		        (r1, r2) -> "{sb=>"+r1+",sc=>"+r2+"}" // 聚合逻辑：两个结果相加
 //		);
 		
-//		3
+//		3 并发调用，传递trans信息
+//		TraceKeys traceKeys = new TraceKeys();
+//		SpanNamer spanNamer = new DefaultSpanNamer();
+//		ExecutorService executor = Executors.newFixedThreadPool(3);
+//
+//		// tag::completablefuture[]
+//		CompletableFuture<String> completableFuture = 
+//				CompletableFuture.supplyAsync(
+//				() -> wshService.toMsB(), 
+//				new TraceableExecutorService(executor,this.tracer, traceKeys, spanNamer, "calculateTax-1")
+//		).thenCombine(
+//				CompletableFuture.supplyAsync(
+//				() -> wshService.toMsC(),
+//				new TraceableExecutorService(executor,this.tracer, traceKeys, spanNamer, "calculateTax-2")
+//        ), (r1, r2) -> "{sb=>"+r1+",sc=>"+r2+"}");
+//		
+//		result = completableFuture.get();
+		
+//		4 并发工具调用，传递trans信息
 		TraceKeys traceKeys = new TraceKeys();
 		SpanNamer spanNamer = new DefaultSpanNamer();
-		ExecutorService executor = Executors.newFixedThreadPool(3);
-
-		// tag::completablefuture[]
-		CompletableFuture<String> completableFuture = 
-				CompletableFuture.supplyAsync(
-				() -> wshService.toMsB(), 
-				new TraceableExecutorService(executor,this.tracer, traceKeys, spanNamer, "calculateTax-1")
-		).thenCombine(
-				CompletableFuture.supplyAsync(
-				() -> wshService.toMsC(),
-				new TraceableExecutorService(executor,this.tracer, traceKeys, spanNamer, "calculateTax-2")
-        ), (r1, r2) -> "{sb=>"+r1+",sc=>"+r2+"}");
-		
-		result = completableFuture.get();
+		result = ConcurrentUtils.concurrentExecuteSame(
+		        () -> wshService.toMsB(),
+		        () -> wshService.toMsC(),
+		        (r1, r2) -> "{sb=>"+r1+",sc=>"+r2+"}", // 聚合逻辑：两个结果相加
+		        new TraceableExecutorService(ConcurrentUtils.getPool(),this.tracer, traceKeys, spanNamer, "calculateTax-1")
+		);
 
 		
 		log.info(result);

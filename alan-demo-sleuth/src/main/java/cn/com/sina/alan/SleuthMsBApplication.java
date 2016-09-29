@@ -1,7 +1,6 @@
 package cn.com.sina.alan;
 
 
-import java.util.Random;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;

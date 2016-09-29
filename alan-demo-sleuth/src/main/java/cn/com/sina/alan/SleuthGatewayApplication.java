@@ -6,8 +6,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.sleuth.Span;
 import org.springframework.cloud.sleuth.SpanAccessor;
 import org.springframework.cloud.sleuth.Tracer;
+import org.springframework.cloud.sleuth.sampler.AlwaysSampler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -49,7 +51,9 @@ public class SleuthGatewayApplication {
 		// rpc
 		String s = wshService.toMsA();
 		// 处理rpc结果，做一些适配类的工作
+		Span span = this.tracer.createSpan("local:trans",new AlwaysSampler());
 		String result = wshService.trans(s);
+		this.tracer.close(span);
 		// 异步方法去做一些事情，比如发起风险控制类的操作
 		wshService.localBackGround();
 		
